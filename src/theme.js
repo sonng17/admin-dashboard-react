@@ -2,7 +2,7 @@ import { createContext, useState, useMemo } from "react";
 import { createTheme } from "@mui/material/styles";
 import { light } from "@mui/material/styles/createPalette";
 
-//color design tokens
+// Color design tokens - Bảng màu dark, light
 export const tokens = (mode) => ({
   ...(mode === "dark"
     ? {
@@ -21,7 +21,7 @@ export const tokens = (mode) => ({
           100: "#d0d1d5",
           200: "#a1a4ab",
           300: "#727681",
-          400: "#434957",
+          400: "#1F2A40",
           500: "#141b2d",
           600: "#101624",
           700: "#0c101b",
@@ -121,7 +121,7 @@ export const tokens = (mode) => ({
       }),
 });
 
-// mui theme settings
+// Mui theme settings - Mui theme dark/light, typography, phải có
 export const themeSettings = (mode) => {
   const colors = tokens(mode);
 
@@ -162,7 +162,7 @@ export const themeSettings = (mode) => {
             },
           }),
     },
-    typograpgy: {
+    typography: {
       fontFamily: ["Source Sans 3", "sans-serif"].join(","),
       fontSize: 12,
       h1: {
@@ -193,23 +193,19 @@ export const themeSettings = (mode) => {
   };
 };
 
-// context for color mode
+// Context for color mode-để dùng sau, export theme và changeColorMode state
 export const ColorModeContext = createContext({
   toggleColorMode: () => {},
 });
 
-export const useMode = () => {
-  const [mode, setMode] = useState("dark");
-
-  const colorMode = useMemo(
-    () => ({
-      toggleColorMode: () =>
-        setMode((prev) => (prev === "light" ? "dark" : "light")),
-    }),
-    []
-  );
+export const useMode = (modeMUI) => {
+  const [mode, setMode] = useState(modeMUI);
 
   const theme = useMemo(() => createTheme(themeSettings(mode)), [mode]);
 
-  return [theme, colorMode];
+  const changeColorMode = useMemo(() => {
+    return () => setMode((prev) => (prev === "light" ? "dark" : "light"));
+  }, []);
+
+  return [theme, changeColorMode];
 };
